@@ -30,7 +30,8 @@ def bfs (matrix: Matrix, start_v: int):
         level += 1
     
     result = list()
-    result = dist.to_lists()
+    for i in range(n):
+        result.append(dist.get(i, -1))
     return result
     
 def multi_bfs(matrix: Matrix, start_vs: List[int]):
