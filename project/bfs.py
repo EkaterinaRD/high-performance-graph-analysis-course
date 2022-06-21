@@ -3,45 +3,14 @@ from pygraphblas.types import BOOL, INT64
 from pygraphblas.descriptor import RC
 from typing import List, Tuple
 
-def bfs (matrix: Matrix, start_v: int):
-    
-    
-    if not matrix.square:
-        raise ValueError("This matrix is not square")
-    n = matrix.nrows
-    if start_v >= n or start_v < 0:
-        raise ValueError("Vertex is incorrect")
-    
-    front = Vector.sparse(BOOL, n)
-    front[start_v] = True
-    
-    visited = Vector.sparse(BOOL, n)
-    visited[start_v] = True
-    
-    dist = Vector.sparse(INT64, n, fill=-1)
-    dist[start_v] = 0
-    level = 1
-   
-   
-    while level < n:
-        front = front.vxm(matrix, desc=RC, mask=visited)
-        visited = visited | front
-        dist.assign_scalar(level, mask=front)
-        level += 1
-    
-    result = list()
-    for i in range(n):
-        result.append(dist.get(i, -1))
-    return result
-    
-def multi_bfs(matrix: Matrix, start_vs: List[int]):
+def _bfs(matrix: Matrix, start_vs: List[int]):
     
     if not matrix.square:
         raise ValueError("This matrix is not square")
     n = matrix.nrows
     m = len(start_vs)
-    for i in range(m)
-        if start_vs[i] >= n or start_v[i] < 0:
+    for i in range(m):
+        if start_vs[i] >= n or start_vs[i] < 0:
             raise ValueError("Vertex is incorrect")
          
     
@@ -56,7 +25,9 @@ def multi_bfs(matrix: Matrix, start_vs: List[int]):
         dist_mtx.assign_scalar(0, r, v)
     
     level = 1
-    while level < n:
+    prev = -1
+    while visited_mtx.nvals != prev:
+        prev = visited_mtx.nvals
         front_mtx = front_mtx.mxm(matrix, mask=visited_mtx, desc=RC)
         visited_mtx = visited_mtx | front_mtx
         dist_mtx.assign_scalar(level, mask=front_mtx)
@@ -72,3 +43,18 @@ def multi_bfs(matrix: Matrix, start_vs: List[int]):
         result.append((v, res_row))
     
     return result
+
+
+def bfs (matrix: Matrix, start_v: int):
+    
+    result = list()
+    result = _bfs(matrix, [start_v])[0][1]
+    
+    return result
+    
+    
+    
+def multi_bfs(matrix: Matrix, start_vs: List[int]):
+    
+    return _bfs(matrix, start_vs)
+   
